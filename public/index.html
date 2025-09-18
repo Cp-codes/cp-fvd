@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook Video Downloader - Download FB Videos Easily</title>
+    <meta name="description" content="Download Facebook videos in HD quality. Fast, free, and easy to use Facebook video downloader.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom styles -->
+    <style>
+        .gradient-bg {
+            background: #13203D;
+            background: linear-gradient(135deg, #13203D 0%, #1A1B4B 100%);
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(100, 114, 255, 0.1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .loading-spinner {
+            border: 3px solid rgba(100, 114, 255, 0.1);
+            border-top: 3px solid #6472FF;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .agency-banner {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjgiIGhlaWdodD0iOTAiPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYSIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzEzMjAzRCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzFBMUI0QiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI3MjgiIGhlaWdodD0iOTAiIGZpbGw9InVybCgjYSkiLz48Y2lyY2xlIGN4PSI2MDAiIGN5PSI0NSIgcj0iMjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY0NzJGRiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIwLjIiLz48cGF0aCBkPSJNNjUwIDIwTDY5MCA3MCIgc3Ryb2tlPSIjNjQ3MkZGIiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9IjAuMiIvPjxyZWN0IHg9IjUwMCIgeT0iMzAiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNjQ3MkZGIiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9IjAuMiIvPjwvc3ZnPg==');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .agency-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%);
+            z-index: 1;
+        }
+
+        .agency-banner > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .tech-dot {
+            animation: techPulse 2s infinite;
+        }
+
+        @keyframes techPulse {
+            0% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.5); opacity: 0.3; }
+            100% { transform: scale(1); opacity: 0.6; }
+        }
+
+        .agency-banner-large {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjgiIGhlaWdodD0iMjAwIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImEiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMxMzIwM0QiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxQTFCNEIiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iNzI4IiBoZWlnaHQ9IjIwMCIgZmlsbD0idXJsKCNhKSIvPjxjaXJjbGUgY3g9IjYwMCIgY3k9IjEwMCIgcj0iNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY0NzJGRiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIwLjIiLz48cGF0aCBkPSJNNjUwIDUwTDY5MCAxNTAiIHN0cm9rZT0iIzY0NzJGRiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIwLjIiLz48cmVjdCB4PSI1MDAiIHk9IjgwIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY0NzJGRiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIwLjIiLz48L3N2Zz4=');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .agency-banner-large::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%);
+            z-index: 1;
+        }
+
+        .agency-banner-large > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Responsive styles for both banners */
+        @media (max-width: 768px) {
+            .agency-banner, .agency-banner-large {
+                height: auto !important;
+            }
+            
+            .agency-banner .flex {
+                flex-direction: column;
+                padding: 1.5rem !important;
+                gap: 1rem;
+            }
+
+            .agency-banner-large .grid {
+                grid-template-columns: 1fr !important;
+                gap: 1.5rem;
+            }
+
+            .agency-banner .hidden-mobile {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen gradient-bg">
+    <!-- Navigation -->
+    <nav class="glass-effect shadow-lg border-b border-blue-900/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <i class="fab fa-facebook text-blue-400 text-2xl mr-3"></i>
+                    <h1 class="text-white text-xl font-bold tracking-wide">CP Video Downloader</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#" class="text-gray-300 hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">Home</a>
+                        <a href="#how-to-use" class="text-gray-300 hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">How to Use</a>
+                        <a href="#about" class="text-gray-300 hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">About</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Hero Section -->
+        <div class="text-center mb-12">
+            <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">
+                Download Facebook Videos
+            </h2>
+            <p class="text-xl text-blue-100 mb-8">
+                Fast, free, and easy way to download Facebook videos in HD quality
+            </p>
+        </div>
+
+        <!-- Advertisement Banner -->
+        <div class="mb-8">
+            <div class="glass-effect rounded-lg p-2">
+                <div class="agency-banner w-full h-[90px] rounded-lg flex items-center overflow-hidden">
+                    <!-- Content Container -->
+                    <div class="flex w-full justify-between items-center px-4 md:px-8">
+                        <!-- Left side: Logo and Text -->
+                        <div class="flex items-center space-x-3 md:space-x-6">
+                            <!-- Logo -->
+                            <div class="flex items-center space-x-2 md:space-x-3">
+                                <div class="relative">
+                                    <div class="w-10 h-10 md:w-12 md:h-12 bg-white/10 backdrop-blur-sm rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-laptop-code text-white text-lg md:text-xl"></i>
+                                    </div>
+                                    <div class="absolute -top-1 -right-1 w-3 h-3">
+                                        <span class="tech-dot absolute inline-flex h-full w-full rounded-full bg-blue-400"></span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h3 class="text-white text-lg md:text-xl font-bold tracking-wider">CPCODES</h3>
+                                    <p class="text-blue-200 text-xs font-medium">WEB DESIGN AGENCY</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Center: Tagline -->
+                        <div class="flex-1 text-center px-2 md:px-6 hidden-mobile">
+                            <p class="text-white/90 text-sm font-medium">
+                                <span class="text-blue-300">Modern</span> • 
+                                <span class="text-purple-300">Responsive</span> • 
+                                <span class="text-blue-300">Innovative</span>
+                            </p>
+                        </div>
+                        
+                        <!-- Right side: CTA -->
+                        <div>
+                            <a href="#" class="group relative inline-flex items-center px-4 md:px-6 py-2 overflow-hidden rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-all duration-300">
+                                <span class="relative text-white text-xs md:text-sm font-medium">Contact Us</span>
+                                <i class="fas fa-arrow-right text-white text-xs md:text-sm ml-2 group-hover:translate-x-1 transition-transform"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Video Input Section -->
+        <div class="glass-effect rounded-lg p-6 mb-8">
+            <div class="flex flex-col md:flex-row gap-4">
+                <div class="flex-1">
+                    <input 
+                        type="url" 
+                        id="videoUrl" 
+                        placeholder="Paste Facebook video URL here..." 
+                        class="w-full px-4 py-3 rounded-lg bg-white/5 border border-blue-900/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition-all"
+                    >
+                </div>
+                <button 
+                    id="downloadBtn" 
+                    class="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-[#13203D]"
+                >
+                    <span id="btnText">
+                        <i class="fas fa-download mr-2"></i>
+                        Download
+                    </span>
+                    <div id="btnLoading" class="hidden flex items-center justify-center">
+                        <div class="loading-spinner mr-2"></div>
+                        Processing...
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="hidden mb-6">
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    <span id="errorText"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Video Preview Section -->
+        <div id="videoPreview" class="hidden fade-in">
+            <div class="glass-effect rounded-lg p-6 mb-8">
+                <h3 class="text-2xl font-bold text-white mb-6">Video Preview</h3>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Video Thumbnail -->
+                    <div class="space-y-4">
+                        <div class="relative">
+                            <img 
+                                id="videoThumbnail" 
+                                src="" 
+                                alt="Video Thumbnail" 
+                                class="w-full rounded-lg shadow-lg"
+                            >
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="bg-black bg-opacity-50 rounded-full p-4">
+                                    <i class="fas fa-play text-white text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-white">
+                            <h4 id="videoTitle" class="font-semibold text-lg mb-2"></h4>
+                            <p id="videoDuration" class="text-blue-200 text-sm"></p>
+                        </div>
+                    </div>
+                    
+                    <!-- Download Options -->
+                    <div class="space-y-4">
+                        <h4 class="text-xl font-semibold text-white">Download Options</h4>
+                        <div id="downloadOptions" class="space-y-3">
+                            <!-- Download buttons will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advertisement Banner Large -->
+        <div class="mb-8">
+            <div class="glass-effect rounded-lg p-2">
+                <div class="agency-banner-large w-full h-[200px] rounded-lg overflow-hidden">
+                    <div class="h-full flex flex-col md:flex-row items-center">
+                        <!-- Left Column -->
+                        <div class="w-full md:w-1/2 p-6 md:p-8">
+                            <div class="space-y-4">
+                                <div class="flex items-center space-x-4">
+                                    <div class="relative">
+                                        <div class="w-16 h-16 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                                            <i class="fas fa-paint-brush text-white text-2xl"></i>
+                                        </div>
+                                        <div class="absolute -top-1 -right-1 w-4 h-4">
+                                            <span class="tech-dot absolute inline-flex h-full w-full rounded-full bg-purple-400"></span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-2xl md:text-3xl font-bold text-white tracking-wider">CPCODES</h3>
+                                        <p class="text-purple-200 text-sm md:text-base font-medium">CREATIVE DESIGN SOLUTIONS</p>
+                                    </div>
+                                </div>
+                                <p class="text-gray-300 text-sm md:text-base leading-relaxed">
+                                    Transform your digital presence with our expert web design and development services. 
+                                    Create stunning, responsive websites that drive results.
+                                </p>
+                                <div class="flex flex-wrap gap-3">
+                                    <span class="px-3 py-1 bg-white/10 rounded-full text-blue-200 text-xs">Web Design</span>
+                                    <span class="px-3 py-1 bg-white/10 rounded-full text-purple-200 text-xs">UI/UX</span>
+                                    <span class="px-3 py-1 bg-white/10 rounded-full text-blue-200 text-xs">Development</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Column -->
+                        <div class="w-full md:w-1/2 p-6 md:p-8 flex items-center justify-center">
+                            <div class="text-center space-y-4">
+                                <h4 class="text-xl md:text-2xl font-bold text-white">Start Your Project Today</h4>
+                                <p class="text-gray-300 text-sm md:text-base">Get a free consultation and quote</p>
+                                <a href="#" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-300 shadow-lg">
+                                    <span class="text-sm md:text-base font-semibold">Get Started</span>
+                                    <i class="fas fa-angle-right ml-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- How to Use Section -->
+        <div id="how-to-use" class="glass-effect rounded-lg p-6 mb-8">
+            <h3 class="text-2xl font-bold text-white mb-6">How to Use</h3>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="text-center">
+                    <div class="bg-blue-500 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-copy text-white text-xl"></i>
+                    </div>
+                    <h4 class="text-white font-semibold mb-2">1. Copy URL</h4>
+                    <p class="text-blue-100 text-sm">Copy the Facebook video URL from your browser</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-blue-500 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-paste text-white text-xl"></i>
+                    </div>
+                    <h4 class="text-white font-semibold mb-2">2. Paste & Click</h4>
+                    <p class="text-blue-100 text-sm">Paste the URL and click the Download button</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-blue-500 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-download text-white text-xl"></i>
+                    </div>
+                    <h4 class="text-white font-semibold mb-2">3. Download</h4>
+                    <p class="text-blue-100 text-sm">Choose quality and download your video</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Section -->
+        <div id="about" class="glass-effect rounded-lg p-6 mb-8">
+            <h3 class="text-2xl font-bold text-white mb-4">About FB Video Downloader</h3>
+            <p class="text-blue-100 mb-4">
+                Our Facebook Video Downloader is a free, fast, and reliable tool that allows you to download Facebook videos in various qualities. 
+                Whether you want to save a video for offline viewing or share it with friends, our tool makes it easy and convenient.
+            </p>
+            <div class="grid md:grid-cols-2 gap-6 mt-6">
+                <div>
+                    <h4 class="text-white font-semibold mb-2">Features:</h4>
+                    <ul class="text-blue-100 text-sm space-y-1">
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Multiple quality options</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Fast download speeds</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>No registration required</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Mobile-friendly interface</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-semibold mb-2">Supported Formats:</h4>
+                    <ul class="text-blue-100 text-sm space-y-1">
+                        <li><i class="fas fa-video text-blue-400 mr-2"></i>MP4 (Various qualities)</li>
+                        <li><i class="fas fa-music text-blue-400 mr-2"></i>Audio only (MP3)</li>
+                        <li><i class="fas fa-hd-video text-blue-400 mr-2"></i>HD Quality</li>
+                        <li><i class="fas fa-mobile-alt text-blue-400 mr-2"></i>Mobile optimized</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="glass-effect mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h4 class="text-white font-semibold mb-4">FB Video Downloader</h4>
+                    <p class="text-blue-100 text-sm">
+                        The easiest way to download Facebook videos in high quality. 
+                        Fast, free, and reliable.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Quick Links</h4>
+                    <ul class="text-blue-100 text-sm space-y-2">
+                        <li><a href="#" class="hover:text-white transition-colors">Home</a></li>
+                        <li><a href="#how-to-use" class="hover:text-white transition-colors">How to Use</a></li>
+                        <li><a href="#about" class="hover:text-white transition-colors">About</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Support</h4>
+                    <ul class="text-blue-100 text-sm space-y-2">
+                        <li><a href="#" class="hover:text-white transition-colors">FAQ</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Contact Us</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Report Issue</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-blue-300 border-opacity-20 mt-8 pt-8 text-center">
+                <p class="text-blue-100 text-sm">
+                    © 2024 FB Video Downloader. All rights reserved. 
+                    <span class="text-blue-200">Made with ❤️ for video enthusiasts</span>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
